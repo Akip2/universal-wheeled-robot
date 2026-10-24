@@ -1,11 +1,9 @@
 #include <NimBLEDevice.h>
 #include <Arduino.h>
 
-#define SERVICE_UUID \
-    "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
-
-#define COMMAND_UUID \
-    "beb5483e-1e6d-4a8f-8e5b-8b1a9f6c1001"
+const char *SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
+const char* COMMAND_UUID = "beb5483e-1e6d-4a8f-8e5b-8b1a9f6c1001";
+const char* DEVICE_NAME = "Universal wheeled robot";
 
 volatile float joystickX = 0;
 volatile float joystickY = 0;
@@ -26,7 +24,7 @@ class CommandCallbacks : public NimBLECharacteristicCallbacks {
 };
 
 void setupBle() {
-    NimBLEDevice::init("ESP32-Joystick");
+    NimBLEDevice::init(DEVICE_NAME);
 
     NimBLEServer *server = NimBLEDevice::createServer();
 
@@ -46,6 +44,7 @@ void setupBle() {
     NimBLEAdvertising *advertising =
         NimBLEDevice::getAdvertising();
 
+    advertising->setName(DEVICE_NAME);
     advertising->addServiceUUID(SERVICE_UUID);
     advertising->start();
 }
