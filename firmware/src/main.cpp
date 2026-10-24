@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "motor.hpp"
+#include "ble_communicator.hpp"
 
 const int LED_PIN = 2;
 
@@ -12,6 +13,7 @@ int phaseChangeInterval = 1250;
 
 void setup() {
   Serial.begin(9600);
+  setupBle();
 
   analogWrite(LED_PIN, 1);
   Serial.println("ready");
@@ -36,5 +38,4 @@ void zigzag() {
 }
 
 void loop() {
-  zigzag();
 }
