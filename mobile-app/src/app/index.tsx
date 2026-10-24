@@ -1,16 +1,20 @@
-import Joystick from "@/components/joystick";
-import { View, Text, StyleSheet } from "react-native";
+import { router } from "expo-router";
+import { Pressable, Text, View, StyleSheet } from "react-native";
+import Control from "./control";
 
 export default function Index() {
-  const handleJoystickMove = (x: number, y: number) => {
-    console.log("Joystick:", { x, y });
-  };
-
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Control joystick</Text>
+      <Control />
 
-      <Joystick onMove={handleJoystickMove} />
+      <Pressable
+        style={styles.bluetoothButton}
+        onPress={() => router.push("/bluetooth")}
+      >
+        <Text style={styles.buttonText}>
+          Scanner les appareils Bluetooth
+        </Text>
+      </Pressable>
     </View>
   );
 }
@@ -18,16 +22,19 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#10151f",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
+    backgroundColor: "#0B1120",
   },
-
-  title: {
-    color: "#ffffff",
-    fontSize: 26,
-    fontWeight: "700",
-    marginBottom: 44,
+  bluetoothButton: {
+    backgroundColor: "#2563EB",
+    padding: 15,
+    borderRadius: 12,
+    alignItems: "center",
+    marginHorizontal: 20,
+    marginVertical: 15,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
