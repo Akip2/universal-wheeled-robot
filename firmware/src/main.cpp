@@ -1,9 +1,14 @@
 #include <Arduino.h>
 #include "motor.hpp"
-#include "wifi_manager.hpp"
 #include "ble_communicator.hpp"
+#include <WebServer.h>
 
 const int LED_PIN = 2;
+
+const char *ssid = "UWR_Robot";
+const char *password = "robot1234";
+
+WebServer server(80);
 
 Motor motorA(17, 5, 18);
 Motor motorB(16, 4, 15);
@@ -12,16 +17,56 @@ int currentPhase = 0;
 unsigned long lastPhaseChangeTime = 0;
 int phaseChangeInterval = 1250;
 
+bool setupWifi()
+{
+  WiFi.mode(WIFI_AP);
+
+  bool success = WiFi.softAP(ssid, password);
+
+  if (success)
+  {
+    Serial.println(WiFi.softAPIP());
+  }
+
+  return success;
+}
+
+void setupServer()
+{
+  server.on("/", HTTP_GET, []()
+            { 
+        Serial.println("request caught");
+        server.send(200, "text/plain", "Robot connecte au Wi-Fi. Serveur operationnel !"); });
+
+  server.on("/commande", HTTP_GET, []()
+            {
+        String x = server.arg("x");
+        String y = server.arg("y");
+
+        Serial.print("Joystick X = ");
+        Serial.print(x);
+        Serial.print(" | Y = ");
+        Serial.println(y);
+
+        server.send(200, "text/plain", "Commande recue"); });
+
+  server.begin();
+}
+
 void setup()
 {
   Serial.begin(9600);
-  
+
   setupBle();
   bool success = setupWifi();
 
-  if (success) {
+  if (success)
+  {
     Serial.println("Point Wi-Fi demarre !");
-  } else {
+    setupServer();
+  }
+  else
+  {
     Serial.println("Erreur : impossible de creer le reseau Wi-Fi");
   }
 
@@ -55,4 +100,5 @@ void zigzag()
 
 void loop()
 {
+  server.handleClient();
 }
